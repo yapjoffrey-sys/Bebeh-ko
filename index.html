@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome Page</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(270deg, #ff6b6b, #feca57, #48dbfb, #1dd1a1);
+      background-size: 800% 800%;
+      animation: gradientShift 10s ease infinite;
+      font-family: Arial, sans-serif;
+      color: white;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 20px;
+      animation: floatText 3s ease-in-out infinite;
+      z-index: 2;
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 10px;
+      background: #222;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+      z-index: 2;
+    }
+
+    button:hover {
+      background: #444;
+    }
+
+    .message {
+      margin-top: 30px;
+      font-size: 2em;
+      white-space: pre-line;
+      z-index: 2;
+    }
+
+    .heart {
+      position: absolute;
+      color: pink;
+      font-size: 2em;
+      animation: floatUp 6s linear infinite;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes floatText {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Hello Bebeh Ko 💖</h1>
+  <button onclick="showMessage()">Click Me</button>
+  <div class="message" id="msg"></div>
+
+  <!-- Sound effect -->
+  <audio id="typeSound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+
+  <script>
+    function typeWriter(text, element, speed=100) {
+      let i = 0;
+      const sound = document.getElementById("typeSound");
+      function typing() {
+        if (i < text.length) {
+          element.innerHTML += text.charAt(i);
+          sound.currentTime = 0;
+          sound.play();
+          i++;
+          setTimeout(typing, speed);
+        }
+      }
+      typing();
+    }
+
+    function showMessage() {
+      const msg = document.getElementById("msg");
+      msg.innerHTML = ""; 
+      const text = "I miss you 💕\nI love you ❤️";
+      typeWriter(text, msg, 120);
+    }
+
+    // Generate floating hearts
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerHTML = "💖";
+      heart.style.left = Math.random() * window.innerWidth + "px";
+      heart.style.top = window.innerHeight + "px";
+      document.body.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 6000);
+    }
+
+    setInterval(createHeart, 1000);
+  </script>
+</body>
+</html>
