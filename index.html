@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Welcome Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 0;
@@ -20,7 +21,7 @@
     }
 
     h1 {
-      font-size: 2em; /* mas maliit na title */
+      font-size: 1.8em; /* mas maliit na title */
       margin-bottom: 20px;
       animation: floatText 3s ease-in-out infinite;
       z-index: 2;
@@ -44,11 +45,11 @@
 
     .message {
       margin-top: 30px;
-      font-size: 3em; /* mas malaki ang mensahe */
+      font-size: 4em; /* mas malaki pa kaysa sa title */
       white-space: pre-line;
       z-index: 2;
       text-align: center;
-      text-shadow: 0 0 10px #ff6b6b, 0 0 20px #ff6b6b, 0 0 30px #ff6b6b;
+      text-shadow: 0 0 15px #ff6b6b, 0 0 25px #feca57, 0 0 35px #48dbfb;
       animation: glow 2s ease-in-out infinite alternate;
     }
 
@@ -76,8 +77,8 @@
     }
 
     @keyframes glow {
-      from { text-shadow: 0 0 10px #ff6b6b, 0 0 20px #feca57, 0 0 30px #48dbfb; }
-      to { text-shadow: 0 0 20px #ff6b6b, 0 0 30px #feca57, 0 0 40px #48dbfb; }
+      from { text-shadow: 0 0 15px #ff6b6b, 0 0 25px #feca57, 0 0 35px #48dbfb; }
+      to { text-shadow: 0 0 25px #ff6b6b, 0 0 35px #feca57, 0 0 45px #48dbfb; }
     }
   </style>
 </head>
