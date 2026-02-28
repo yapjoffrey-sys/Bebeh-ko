@@ -1,133 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Welcome Page</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(270deg, #ff6b6b, #feca57, #48dbfb, #1dd1a1);
-      background-size: 800% 800%;
-      animation: gradientShift 10s ease infinite;
-      font-family: Arial, sans-serif;
-      color: white;
-      flex-direction: column;
-      overflow: hidden;
-    }
+<meta charset="UTF-8">
+<title>Secure Access</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    h1 {
-      font-size: 1.8em; /* mas maliit na title */
-      margin-bottom: 20px;
-      animation: floatText 3s ease-in-out infinite;
-      z-index: 2;
-    }
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: black;
+  color: #00ff00;
+  font-family: "Courier New", monospace;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
 
-    button {
-      padding: 15px 30px;
-      font-size: 1.2em;
-      border: none;
-      border-radius: 10px;
-      background: #222;
-      color: white;
-      cursor: pointer;
-      transition: 0.3s;
-      z-index: 2;
-    }
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
 
-    button:hover {
-      background: #444;
-    }
+.container {
+  z-index: 2;
+  text-align: center;
+}
 
-    .message {
-      margin-top: 30px;
-      font-size: 4em; /* mas malaki pa kaysa sa title */
-      white-space: pre-line;
-      z-index: 2;
-      text-align: center;
-      text-shadow: 0 0 15px #ff6b6b, 0 0 25px #feca57, 0 0 35px #48dbfb;
-      animation: glow 2s ease-in-out infinite alternate;
-    }
+input {
+  background: black;
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  padding: 10px;
+  font-size: 1.1em;
+  outline: none;
+}
 
-    .heart {
-      position: absolute;
-      color: pink;
-      font-size: 2em;
-      animation: floatUp 6s linear infinite;
-    }
+button {
+  background: #00ff00;
+  border: none;
+  padding: 10px 20px;
+  margin-left: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
 
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+button:hover {
+  background: lime;
+}
 
-    @keyframes floatText {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
-    }
+#message {
+  margin-top: 20px;
+}
 
-    @keyframes floatUp {
-      0% { transform: translateY(0) scale(1); opacity: 1; }
-      100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
-    }
+#secretContent {
+  display: none;
+  text-align: center;
+  color: white;
+  z-index: 2;
+}
 
-    @keyframes glow {
-      from { text-shadow: 0 0 15px #ff6b6b, 0 0 25px #feca57, 0 0 35px #48dbfb; }
-      to { text-shadow: 0 0 25px #ff6b6b, 0 0 35px #feca57, 0 0 45px #48dbfb; }
-    }
-  </style>
+.love-text {
+  font-size: 2em;
+  margin-top: 20px;
+  text-shadow: 0 0 10px pink, 0 0 20px red;
+}
+
+.love-image {
+  width: 280px;
+  border-radius: 20px;
+  margin-top: 20px;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: 1s;
+  box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00;
+}
+
+.love-image.show {
+  opacity: 1;
+  transform: scale(1);
+}
+</style>
 </head>
+
 <body>
-  <h1>Hello Bebeh Ko 💖</h1>
-  <button onclick="showMessage()">Click Me</button>
-  <div class="message" id="msg"></div>
 
-  <!-- Sound effect -->
-  <audio id="typeSound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+<canvas id="matrix"></canvas>
 
-  <script>
-    function typeWriter(text, element, speed=100) {
-      let i = 0;
-      const sound = document.getElementById("typeSound");
-      function typing() {
-        if (i < text.length) {
-          element.innerHTML += text.charAt(i);
-          sound.currentTime = 0;
-          sound.play();
-          i++;
-          setTimeout(typing, speed);
-        }
-      }
-      typing();
+<div class="container" id="loginBox">
+  <h2>> ENTER ACCESS CODE</h2>
+  <input type="password" id="passwordInput" placeholder="********">
+  <button onclick="checkPassword()">LOGIN</button>
+  <div id="message"></div>
+</div>
+
+<div id="secretContent">
+  <h1>ACCESS GRANTED 💚</h1>
+  <div class="love-text" id="loveMsg"></div>
+  <img src="love.jpg" id="lovePic" class="love-image">
+</div>
+
+<script>
+// MATRIX EFFECT
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
+
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+
+const letters = "01";
+const fontSize = 14;
+const columns = canvas.width / fontSize;
+const drops = [];
+
+for (let x = 0; x < columns; x++) drops[x] = 1;
+
+function draw() {
+  ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "#0F0";
+  ctx.font = fontSize + "px monospace";
+
+  for (let i = 0; i < drops.length; i++) {
+    const text = letters.charAt(Math.floor(Math.random() * letters.length));
+    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
+      drops[i] = 0;
+
+    drops[i]++;
+  }
+}
+
+setInterval(draw, 33);
+
+// PASSWORD
+function checkPassword() {
+  const correctPassword = "12312024";
+  const input = document.getElementById("passwordInput").value;
+  const message = document.getElementById("message");
+
+  if (input === correctPassword) {
+    message.innerHTML = "> ACCESS GRANTED...";
+    setTimeout(() => {
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("secretContent").style.display = "block";
+      showLoveMessage();
+    }, 1000);
+  } else {
+    message.innerHTML = "> ACCESS DENIED ❌";
+  }
+}
+
+// TYPEWRITER
+function typeWriter(text, element, speed=70) {
+  let i = 0;
+  function typing() {
+    if (i < text.length) {
+      element.innerHTML += text.charAt(i);
+      i++;
+      setTimeout(typing, speed);
     }
+  }
+  typing();
+}
 
-    function showMessage() {
-      const msg = document.getElementById("msg");
-      msg.innerHTML = ""; 
-      const text = "I miss you 💕\nI love you ❤️";
-      typeWriter(text, msg, 120);
-    }
+function showLoveMessage() {
+  const msg = document.getElementById("loveMsg");
+  const pic = document.getElementById("lovePic");
 
-    // Floating hearts
-    function createHeart() {
-      const heart = document.createElement("div");
-      heart.className = "heart";
-      heart.innerHTML = "💖";
-      heart.style.left = Math.random() * window.innerWidth + "px";
-      heart.style.top = window.innerHeight + "px";
-      document.body.appendChild(heart);
+  msg.innerHTML = "";
+  const text = "SYSTEM OVERRIDE...\nLOVE PROTOCOL ACTIVATED 💕\nI miss you. I love you ❤️";
+  typeWriter(text, msg, 70);
 
-      setTimeout(() => {
-        heart.remove();
-      }, 6000);
-    }
+  setTimeout(() => {
+    pic.classList.add("show");
+  }, 2500);
+}
+</script>
 
-    setInterval(createHeart, 1000);
-  </script>
 </body>
 </html>
